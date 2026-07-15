@@ -1,127 +1,100 @@
-Book a Doctor Appointment System - Backend API
-This is the backend API for the Book a Doctor healthcare appointment booking platform. It handles data storage, CRUD operations, file uploads for medical reports, and basic simulated login authentication for Patients, Doctors, and Admins.
-
-🚀 Features
-MongoDB Atlas Integration: Relational-like schemas set up using Mongoose.
-Bcrypt Password Hashing: Hashed passwords saved in database tables with pre-save triggers.
-Zero-Token Session Authentication: Clean simulated logins that verify credentials and return full user data profiles.
-Multer File Upload: Allows patients/doctors to upload medical reports and securely stores them.
-Dynamic Preloaded Database Seed: Auto-populates specializations, default test user credentials, and sample appointments.
-CORS & Static Files: Fully compatible with Vite/React frontend, serving static files out of the /uploads folder.
-🛠️ Tech Stack
-Runtime: Node.js
-Framework: Express.js
-Database: MongoDB (via Mongoose ODM)
-File Upload: Multer
-Security: BcryptJS
-Dev Tooling: Nodemon, Dotenv, CORS
-📂 Project Structure
-text
-
-
+================================================================================
+                 BOOK A DOCTOR APPOINTMENT SYSTEM - BACKEND API                 
+================================================================================
+1. SYSTEM OVERVIEW
+--------------------------------------------------------------------------------
+This is the backend API for the "Book a Doctor" healthcare platform.
+It handles MongoDB database storage, CRUD operations, medical file uploads,
+and simulated credential logins for Patients, Doctors, and Admins.
+2. FEATURES
+--------------------------------------------------------------------------------
+* MongoDB Atlas Integration: Schema structure built with Mongoose.
+* Bcrypt Password Hashing: Hashed passwords saved in the database.
+* Session Authentication: Logins verify credentials and return full profiles.
+* Multer File Upload: Stores patient medical reports securely.
+* Database Seeder: Auto-populates specializations and default test accounts.
+* CORS Enabled: Fully compatible with Vite/React frontend.
+3. TECH STACK
+--------------------------------------------------------------------------------
+* Runtime Environment: Node.js
+* Backend Framework: Express.js
+* Database Engine: MongoDB (via Mongoose ODM)
+* File Management: Multer
+* Password Security: BcryptJS
+* Utility Packages: Nodemon, Dotenv, CORS
+4. DIRECTORY LAYOUT
+--------------------------------------------------------------------------------
 backend/
 ├── config/
-│   └── database.js          # Mongoose database connection setup
+│   └── database.js          (Mongoose connection configuration)
 ├── controllers/
-│   ├── adminController.js   # Admin registers, logins, lists
-│   ├── appointmentController.js # Appointment creation, status updates, listings
-│   ├── doctorController.js  # Doctor profile registration, updates, lists
-│   ├── patientController.js # Patient profile registrations, updates, lists
-│   └── specializationController.js # Specialty category management
+│   ├── adminController.js   (Admin register, login, listing logic)
+│   ├── appointmentController.js (Appointment CRUD and upload handler)
+│   ├── doctorController.js  (Doctor registrations, profile updates)
+│   ├── patientController.js (Patient registration, profile updates)
+│   └── specializationController.js (Specialty categories CRUD)
 ├── middleware/
-│   └── uploadMiddleware.js  # Multer file storage & upload filtering
+│   └── uploadMiddleware.js  (Multer disk storage and file extension filters)
 ├── models/
-│   ├── Admin.js             # Admin Mongoose model
-│   ├── Appointment.js       # Appointment Mongoose model
-│   ├── Doctor.js            # Doctor Mongoose model
-│   ├── Patient.js           # Patient Mongoose model
-│   └── Specialization.js    # Specialization Mongoose model
+│   ├── Admin.js, Appointment.js, Doctor.js, Patient.js, Specialization.js
 ├── routes/
-│   ├── adminRoutes.js
-│   ├── appointmentRoutes.js
-│   ├── doctorRoutes.js
-│   ├── patientRoutes.js
-│   └── specializationRoutes.js
+│   └── (Route mappings linking endpoints to controllers)
 ├── scripts/
-│   └── seed.js              # Clear DB & seeds mock doctors, patients, and admins
-├── uploads/                 # Storage folder for uploaded reports (git-ignored)
-├── .env                     # System environment file
-├── .env.example             # Env reference template
-├── package.json
-└── server.js                # Application entrypoint
-⚙️ Installation & Setup
-1. Configure the Environment Variables
-Create a .env file in the backend/ root directory and copy the contents from .env.example:
-
-env
-
-
-PORT=5000
-MONGODB_URI=mongodb://127.0.0.1:27017/book-a-doctor
-(Replace mongodb://127.0.0.1:27017/book-a-doctor with your MongoDB Atlas Connection String if you are using Atlas)
-
-2. Install Project Dependencies
-Run this command from inside the backend/ directory:
-
-bash
-
-
-npm install
-3. Seed the Database
-Run the preloaded database seeder script to populate default patient, doctor, and admin users:
-
-bash
-
-
-npm run seed
-4. Run the Server
-Run the Express application in development mode (with Nodemon automatic restarts):
-
-bash
-
-
-npm run dev
-The server will boot up on http://localhost:5000.
-
-🔑 Seeded Demo Credentials
-Use the following preloaded credentials to log in during development:
-
-Role	Email Address	Password	Name / Details
-Patient	pranathi@example.com	password123	Pranathi Satyavarapu
-Doctor	sarah@example.com	password123	Dr. Sarah Connor (Cardiology)
-Admin	admin@example.com	password123	Main Administrator
-📡 API Endpoints Reference
-1. Patients (/api/patient)
-Method	Endpoint	Description	Payload Example
-POST	/api/patient/register	Register a new Patient	{ fullName, email, password, phone, ... }
-POST	/api/patient/login	Login Patient (Bcrypt validation)	{ email, password }
-GET	/api/patient	Get all Patients	None
-GET	/api/patient/:id	Get single Patient profile	None
-PUT	/api/patient/:id	Update Patient details	{ address, age, bloodGroup, ... }
-DELETE	/api/patient/:id	Delete Patient profile	None
-2. Doctors (/api/doctor and /api/doctors)
-Method	Endpoint	Description	Payload Example
-POST	/api/doctor/register	Register a new Doctor	{ name, email, password, specialization, ... }
-POST	/api/doctor/login	Login Doctor	{ email, password }
-GET	/api/doctors	Get all Doctors (Supports query ?specialization=...)	None
-GET	/api/doctors/:id	Get single Doctor profile	None
-PUT	/api/doctors/:id	Update Doctor details	{ hospital, fee, bio, availableTime, ... }
-DELETE	/api/doctors/:id	Delete Doctor profile	None
-3. Admins (/api/admin)
-Method	Endpoint	Description	Payload Example
-POST	/api/admin/register	Register a new Admin	{ name, email, password, phone }
-POST	/api/admin/login	Login Admin	{ email, password }
-GET	/api/admin	Get all Admins	None
-4. Appointments (/api/appointments)
-Method	Endpoint	Description	Payload Example / Notes
-POST	/api/appointments	Book new appointment	Uses multipart/form-data for optional medicalReport file upload
-GET	/api/appointments	Get appointments	Supports filters ?patientId=... or ?doctorId=...
-GET	/api/appointments/:id	Get detailed booking info	Populates full Doctor and Patient detail references
-PUT	/api/appointments/:id	Update booking status/date	Status values: 'Pending', 'Approved', 'Completed', 'Cancelled'
-DELETE	/api/appointments/:id	Delete booking entry	None
-5. Specializations (/api/specializations)
-Method	Endpoint	Description	Payload Example
-POST	/api/specializations	Create a medical specialty	{ name, description, image }
-GET	/api/specializations	Get all specialties	None
-PUT	/api/specializations/:id	Edit specialty details	{ name, description, image }
-DELETE	/api/specializations/:id	Remove specialty	None
+│   └── seed.js              (Database seeder configuration)
+├── uploads/                 (Destination folder for patient reports)
+├── .env, .env.example, package.json, server.js
+5. INSTALLATION & RUNNING
+--------------------------------------------------------------------------------
+Step 1: Set up Environment Variables
+Create a file named ".env" in the backend directory with these variables:
+  PORT=5000
+  MONGODB_URI=mongodb://127.0.0.1:27017/book-a-doctor
+Step 2: Install Packages
+Run: npm install
+Step 3: Run Database Seeder
+Run: npm run seed
+Step 4: Start the server
+Run: npm run dev
+(The server will launch at http://localhost:5000)
+6. DEMO CREDENTIALS (PASSWORD FOR ALL IS: password123)
+--------------------------------------------------------------------------------
+* Patient: pranathi@example.com
+* Doctor: sarah@example.com
+* Admin: admin@example.com
+7. API ENDPOINTS SPECIFICATION
+--------------------------------------------------------------------------------
+[PATIENTS API]
+* POST /api/patient/register  --> Create a new patient account
+* POST /api/patient/login     --> Authenticate patient credentials
+* GET  /api/patient          --> List all registered patients
+* GET  /api/patient/:id      --> Retrieve patient details by ID
+* PUT  /api/patient/:id      --> Edit patient profile properties
+* DELETE /api/patient/:id    --> Delete patient account
+[DOCTORS API]
+* POST /api/doctor/register  --> Register a new doctor account
+* POST /api/doctor/login     --> Authenticate doctor credentials
+* GET  /api/doctors          --> List all doctors (supports query ?specialization=...)
+* GET  /api/doctors/:id      --> Get doctor profile details by ID
+* PUT  /api/doctors/:id      --> Edit doctor hospital, schedule, or fees
+* DELETE /api/doctors/:id    --> Delete doctor account
+[ADMINS API]
+* POST /api/admin/register   --> Create an admin account
+* POST /api/admin/login      --> Authenticate admin credentials
+* GET  /api/admin            --> List all administrator accounts
+[APPOINTMENTS API]
+* POST /api/appointments     --> Book appointment (accepts "medicalReport" file)
+* GET  /api/appointments     --> List bookings (supports ?patientId=... or ?doctorId=...)
+* GET  /api/appointments/:id --> Get detailed booking information
+* PUT  /api/appointments/:id --> Update slot details or status (Pending/Approved/Completed/Cancelled)
+* DELETE /api/appointments/:id --> Cancel and delete booking entry
+[SPECIALIZATIONS API]
+* POST /api/specializations     --> Create a new specialty category
+* GET  /api/specializations     --> List all specialties
+* PUT  /api/specializations/:id --> Edit specialization properties
+* DELETE /api/specializations/:id --> Remove specialization category
+8. MEDICAL REPORT UPLOADS
+--------------------------------------------------------------------------------
+* File field key in request: "medicalReport"
+* Allowed extensions: PDF, DOC, DOCX, JPG, PNG
+* Storage directory: backend/uploads/
+* Static Access URL format: http://localhost:5000/uploads/[FILENAME]
